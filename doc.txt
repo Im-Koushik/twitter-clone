@@ -27,3 +27,7 @@ POST ROUTES
 - Add create, delete posts for both mongoDB and cloudinary
 - Like/unlike and comment post routes and controllers are created
 - get all posts, get liked posts, get following posts, get my posts (all are based on passing the userId)
+
+NOTIFICATION ROUTES
+- get all notifications and mark them read true
+- delet all notifications route added
