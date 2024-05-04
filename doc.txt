@@ -3,3 +3,12 @@ BACKEND
 - Create a new server using express
 - Create routes and controllers 
 - Create the MongoDB Database and make the server connect to MongoDB
+
+AUTH ROUTES
+
+- create signup,login,logout routes
+- while signup and login, add a generate token and store the generated token in cookie function using jwt with all security options
+- while logout, clear the cookie
+- to get current user, create a middleware function to decode the cookie and give the userId.
+
+
