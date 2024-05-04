@@ -1,0 +1,5 @@
+BACKEND
+
+- Create a new server using express
+- Create routes and controllers 
+- Create the MongoDB Database and make the server connect to MongoDB
