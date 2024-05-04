@@ -4,11 +4,20 @@ BACKEND
 - Create routes and controllers 
 - Create the MongoDB Database and make the server connect to MongoDB
 
-AUTH ROUTES
+- Create User Model in MongoDB
 
+AUTH ROUTES
 - create signup,login,logout routes
 - while signup and login, add a generate token and store the generated token in cookie function using jwt with all security options
 - while logout, clear the cookie
 - to get current user, create a middleware function to decode the cookie and give the userId.
 
 
+USER ROUTES
+- Add user routes for get user profile, follow, unfollow user
+- for follow, unfollow user, use getByIdAndUpdate and push, pull the ids
+- create notification model for sending notifications 
+- Add Controller for suggested users ( get users excluding current user, already following users) using aggregate method
+
+- Update user controller with different condition checks
+- profile and cover images are handles using cloudinary
