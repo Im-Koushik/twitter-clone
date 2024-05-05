@@ -132,7 +132,7 @@ export const updateUser = async (req, res) => {
     let user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({
-        message: "User not found",
+        error: "User not found",
       });
     }
 
@@ -141,7 +141,7 @@ export const updateUser = async (req, res) => {
       (newPassword && !currentPassword)
     ) {
       return res.status(404).json({
-        message: "Please enter both current and new password",
+        error: "Please enter both current and new password",
       });
     }
 
@@ -149,13 +149,13 @@ export const updateUser = async (req, res) => {
       const isMatch = await bcrypt.compare(currentPassword, user.password);
       if (!isMatch) {
         return res.status(404).json({
-          message: "Current password is incorrect",
+          error: "Current password is incorrect",
         });
       }
 
       if (newPassword.length < 6) {
         return res.status(404).json({
-          message: "Password must be at least 6 characters long",
+          error: "Password must be at least 6 characters long",
         });
       }
 
@@ -198,7 +198,7 @@ export const updateUser = async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      message: "Something went wrong in user controller",
+      error: "Something went wrong in user controller",
     });
   }
 };

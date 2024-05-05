@@ -19,6 +19,7 @@ const ProfilePage = () => {
   const [coverImg, setCoverImg] = useState(null);
   const [profileImg, setProfileImg] = useState(null);
   const [feedType, setFeedType] = useState("posts");
+  const [totalPosts, setTotalPosts] = useState(0);
 
   const coverImgRef = useRef(null);
   const profileImgRef = useRef(null);
@@ -87,7 +88,9 @@ const ProfilePage = () => {
                 </Link>
                 <div className="flex flex-col">
                   <p className="font-bold text-lg">{user?.fullName}</p>
-                  <span className="text-sm text-slate-500">10 posts</span>
+                  <span className="text-sm text-slate-500">
+                    {totalPosts} posts
+                  </span>
                 </div>
               </div>
               {/* COVER IMG */}
@@ -237,7 +240,12 @@ const ProfilePage = () => {
             </>
           )}
 
-          <Posts />
+          <Posts
+            feedType={feedType}
+            username={username}
+            userId={user?._id}
+            setTotalPosts={setTotalPosts}
+          />
         </div>
       </div>
     </>
