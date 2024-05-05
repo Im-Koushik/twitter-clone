@@ -52,3 +52,8 @@ USER CONNECTION
 NOTIFICATION CONNECTION
 - Added getAll, deleteAll queries and mutation
 
+EXTRAS
+- Added posts count in profile page coming from child components for tabs
+- Added emoji picker while creating post from emoji mart
+
+
