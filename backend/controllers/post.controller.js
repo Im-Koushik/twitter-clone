@@ -50,7 +50,7 @@ export const likeUnlikePost = async (req, res) => {
     const post = await Post.findById(postId);
     if (!post) {
       return res.status(404).json({
-        message: "Post not found",
+        error: "Post not found",
       });
     }
 
@@ -73,9 +73,10 @@ export const likeUnlikePost = async (req, res) => {
           },
         }
       );
-      return res.status(201).json({
-        message: "Post unliked",
-      });
+      const updatedLikes = post.likes.filter(
+        (id) => id.toString() !== userId.toString()
+      );
+      return res.status(201).json(updatedLikes);
     } else {
       //like post
       post.likes.push(userId);
@@ -99,14 +100,13 @@ export const likeUnlikePost = async (req, res) => {
 
       await notification.save();
 
-      return res.status(201).json({
-        message: "Post liked",
-      });
+      const updatedLikes = post.likes;
+      return res.status(201).json(updatedLikes);
     }
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      message: "Something went wrong in post controller",
+      error: "Something went wrong in post controller",
     });
   }
 };
@@ -201,7 +201,7 @@ export const getLikedPosts = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({
-        message: "User not found",
+        error: "User not found",
       });
     }
     const likedPosts = await Post.find({
@@ -223,7 +223,7 @@ export const getLikedPosts = async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      message: "Something went wrong in post controller",
+      error: "Something went wrong in post controller",
     });
   }
 };
