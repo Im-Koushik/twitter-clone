@@ -113,7 +113,7 @@ export const getMe = async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      message: "Something went wrong in auth controller",
+      error: "Something went wrong in auth controller",
     });
   }
 };

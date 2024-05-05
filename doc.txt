@@ -31,3 +31,12 @@ POST ROUTES
 NOTIFICATION ROUTES
 - get all notifications and mark them read true
 - delet all notifications route added
+
+FRONTEND
+
+UI
+- Used tailwind for styling, daisyui for components 
+
+ROUTES/AUTH CONNECTION
+- Added react routers and navigations
+- Added react query , usequery, usemutations for signup,login,getMe
