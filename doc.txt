@@ -56,4 +56,7 @@ EXTRAS
 - Added posts count in profile page coming from child components for tabs
 - Added emoji picker while creating post from emoji mart
 
-
+DEPLOYMENT
+- Add Route Checks in server.js to navigate to index.html of dist
+- IMPORTANT: While adding scripts for development/production to set NODE_ENV, don't give white spaces before and after &&
+- "start":"set NODE_ENV=production&&node backend/server.js",
