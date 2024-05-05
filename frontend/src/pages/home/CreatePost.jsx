@@ -1,14 +1,19 @@
 import { CiImageOn } from "react-icons/ci";
 import { BsEmojiSmileFill } from "react-icons/bs";
-import { useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { IoCloseSharp } from "react-icons/io5";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
 
 const CreatePost = () => {
+  let inputRef = useRef(null);
+
   const [text, setText] = useState("");
   const [img, setImg] = useState(null);
-
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [emojiPickerPerLine, setEmojiPickerPerLine] = useState(6);
   const imgRef = useRef(null);
 
   const { data: authUser } = useQuery({ queryKey: ["authUser"] });
@@ -52,6 +57,11 @@ const CreatePost = () => {
     createPost({ text, img });
   };
 
+  const handleEmojiSelect = (emoji) => {
+    setText(text + emoji.native);
+    inputRef.current.focus();
+  };
+
   const handleImgChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -62,6 +72,16 @@ const CreatePost = () => {
       reader.readAsDataURL(file);
     }
   };
+
+  useLayoutEffect(() => {
+    const updatePerLine = () => {
+      const perLine = window.innerWidth >= 768 ? 12 : 6;
+      setEmojiPickerPerLine(perLine);
+    };
+    updatePerLine();
+    window.addEventListener("resize", updatePerLine);
+    return () => window.removeEventListener("resize", updatePerLine);
+  }, []);
 
   return (
     <div className="flex p-4 items-start gap-4 border-b border-gray-700">
@@ -76,7 +96,18 @@ const CreatePost = () => {
           placeholder="What is happening?!"
           value={text}
           onChange={(e) => setText(e.target.value)}
+          ref={inputRef}
         />
+        {showEmojiPicker && (
+          <Picker
+            data={data}
+            onEmojiSelect={handleEmojiSelect}
+            onClickOutside={() => setShowEmojiPicker(false)}
+            perLine={emojiPickerPerLine}
+            maxFrequentRows={1}
+            previewPosition="none"
+          />
+        )}
         {img && (
           <div className="relative w-72 mx-auto">
             <IoCloseSharp
@@ -99,7 +130,13 @@ const CreatePost = () => {
               className="fill-primary w-6 h-6 cursor-pointer"
               onClick={() => imgRef.current.click()}
             />
-            <BsEmojiSmileFill className="fill-primary w-5 h-5 cursor-pointer" />
+            <BsEmojiSmileFill
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowEmojiPicker((prev) => !prev);
+              }}
+              className="fill-primary w-5 h-5 cursor-pointer"
+            />
           </div>
           <input
             type="file"
