@@ -40,3 +40,15 @@ UI
 ROUTES/AUTH CONNECTION
 - Added react routers and navigations
 - Added react query , usequery, usemutations for signup,login,getMe
+
+POST CONNECTION
+- Added react query , usequery, usemutations for posts operations
+- Added composabled/hooks for like/unlike and follow/unfollow users
+
+USER CONNECTION
+- Added all user operations using react query
+- invalidating different queries on operations success
+
+NOTIFICATION CONNECTION
+- Added getAll, deleteAll queries and mutation
+
