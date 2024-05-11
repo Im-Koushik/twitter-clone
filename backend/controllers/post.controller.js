@@ -111,6 +111,67 @@ export const likeUnlikePost = async (req, res) => {
   }
 };
 
+export const bookmarkPost = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { id: postId } = req.params;
+
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({
+        message: "Post not found",
+      });
+    }
+
+    const userBookmarkedPost = post.bookmarks.includes(userId);
+    if (userBookmarkedPost) {
+      //Undo Bookmark
+      await Post.updateOne(
+        { _id: postId },
+        {
+          $pull: {
+            bookmarks: userId,
+          },
+        }
+      );
+      await User.updateOne(
+        { _id: userId },
+        {
+          $pull: {
+            bookmarkedPosts: postId,
+          },
+        }
+      );
+      const updatedBookmarks = post.bookmarks.filter(
+        (id) => id.toString() !== userId.toString()
+      );
+      return res.status(201).json(updatedBookmarks);
+    } else {
+      //bookmark post
+      post.bookmarks.push(userId);
+      await User.updateOne(
+        {
+          _id: userId,
+        },
+        {
+          $push: {
+            bookmarkedPosts: postId,
+          },
+        }
+      );
+      await post.save();
+
+      const updatedBookmarks = post.bookmarks;
+      return res.status(201).json(updatedBookmarks);
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      error: "Something went wrong in post controller",
+    });
+  }
+};
+
 export const commentOnPost = async (req, res) => {
   try {
     const { text } = req.body;
@@ -220,6 +281,39 @@ export const getLikedPosts = async (req, res) => {
       return res.status(200).json([]);
     }
     return res.status(200).json(likedPosts);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      error: "Something went wrong in post controller",
+    });
+  }
+};
+
+export const getBookmarkedPosts = async (req, res) => {
+  const userId = req.params.id;
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        error: "User not found",
+      });
+    }
+    const bookmarkedPosts = await Post.find({
+      _id: { $in: user.bookmarkedPosts },
+    })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "user",
+        select: "-password",
+      })
+      .populate({
+        path: "comments.user",
+        select: "-password",
+      });
+    if (bookmarkedPosts.length === 0) {
+      return res.status(200).json([]);
+    }
+    return res.status(200).json(bookmarkedPosts);
   } catch (err) {
     console.log(err);
     return res.status(500).json({

@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import SignUpPage from "./pages/auth/SignUpPage";
 import LoginPage from "./pages/auth/LoginPage";
 import HomePage from "./pages/home/HomePage";
+import BookmarkPage from "./pages/bookmarks/BookmarkPage";
 import Sidebar from "./components/Sidebar";
 import RightPanel from "./components/RightPanel";
 import NotificationPage from "./pages/notification/NotificationPage";
@@ -60,6 +61,10 @@ function App() {
         <Route
           path="/profile/:username"
           element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/bookmarks"
+          element={authUser ? <BookmarkPage /> : <Navigate to="/login" />}
         />
       </Routes>
       {authUser && <RightPanel />}

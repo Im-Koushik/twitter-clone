@@ -15,6 +15,7 @@ const Post = ({ post }) => {
   const [comment, setComment] = useState("");
   const postOwner = post.user;
   const isLiked = post.likes.includes(authUser._id);
+  const isBookmarked = post.bookmarks.includes(authUser._id);
   const queryClient = useQueryClient();
 
   const isMyPost = authUser._id === postOwner._id;
@@ -74,6 +75,33 @@ const Post = ({ post }) => {
     },
   });
 
+  const { mutate: bookmarkPost, isPending: isBookmarking } = useMutation({
+    mutationFn: async () => {
+      try {
+        const res = await fetch(`/api/posts/bookmark/${post._id}`, {
+          method: "POST",
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || "Something went wrong");
+        }
+        return data;
+      } catch (error) {
+        throw new Error(error);
+      }
+    },
+    onSuccess: (updatedBookmarks) => {
+      queryClient.setQueryData(["posts"], (oldData) => {
+        return oldData.map((p) => {
+          if (p._id === post._id) {
+            return { ...p, bookmarks: updatedBookmarks };
+          }
+          return p;
+        });
+      });
+    },
+  });
+
   const { mutate: commentPost, isPending: isCommenting } = useMutation({
     mutationFn: async () => {
       try {
@@ -118,6 +146,11 @@ const Post = ({ post }) => {
     // debugger;
     if (isLiking) return;
     likePost();
+  };
+
+  const handleBookmarkPost = () => {
+    if (isBookmarking) return;
+    bookmarkPost();
   };
 
   return (
@@ -268,8 +301,15 @@ const Post = ({ post }) => {
                 </span>
               </div>
             </div>
-            <div className="flex w-1/3 justify-end gap-2 items-center">
-              <FaRegBookmark className="w-4 h-4 text-slate-500 cursor-pointer" />
+            <div
+              className="flex w-1/3 justify-end gap-2 items-center"
+              onClick={handleBookmarkPost}
+            >
+              {isBookmarked ? (
+                <FaRegBookmark className="w-4 h-4 text-blue-400 cursor-pointer" />
+              ) : (
+                <FaRegBookmark className="w-4 h-4 text-slate-500 group-hover:text-blue-400 cursor-pointer" />
+              )}
             </div>
           </div>
         </div>
